@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { experience, honors, lead, profile, projects, publications, stats, type Project } from './content'
-import { ProjectVisual } from './components/Visuals'
+import { experience, highlights, honors, profile, projects, publications, type Project } from './content'
+import { figureSrc, ProjectVisual } from './components/Visuals'
 
 type Theme = 'light' | 'dark'
 
@@ -32,84 +32,100 @@ function ThemeToggle() {
   }
 
   return (
-    <button className="theme-toggle" onClick={toggle} aria-label="Toggle color theme">
-      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-        <circle cx="12" cy="12" r="5" className="sun" />
-        <path d="M12 7a5 5 0 0 0 0 10z" className="moon" />
+    <button className="icon-btn" onClick={toggle} aria-label="Toggle color theme">
+      <svg viewBox="0 0 24 24" width="19" height="19" aria-hidden="true">
+        <circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" strokeWidth="1.8" />
+        <path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor" />
       </svg>
     </button>
   )
 }
 
-function Arrow() {
+const icons = {
+  github: (
+    <path
+      fill="currentColor"
+      d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.04 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.62 1.58.23 2.75.11 3.04.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.26 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"
+    />
+  ),
+  linkedin: (
+    <path
+      fill="currentColor"
+      d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.75h4v11.75H3zM9.5 9.75h3.83v1.6h.06c.53-1 1.84-2.06 3.79-2.06 4.05 0 4.8 2.67 4.8 6.13v6.08h-4v-5.39c0-1.29-.02-2.94-1.79-2.94-1.8 0-2.07 1.4-2.07 2.85v5.48h-4z"
+    />
+  ),
+  mail: (
+    <g fill="none" stroke="currentColor" strokeWidth="1.8">
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <path d="M3.5 6.5l8.5 6.5 8.5-6.5" />
+    </g>
+  ),
+}
+
+function Icon({ name, href, label }: { name: keyof typeof icons; href: string; label: string }) {
+  const external = !href.startsWith('mailto:')
   return (
-    <svg className="arrow" viewBox="0 0 12 12" width="11" height="11" aria-hidden="true">
-      <path d="M3 9L9 3M4 3h5v5" fill="none" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
+    <a className="icon-btn" href={href} aria-label={label} title={label} {...(external ? { target: '_blank', rel: 'noreferrer' } : {})}>
+      <svg viewBox="0 0 24 24" width="19" height="19" aria-hidden="true">
+        {icons[name]}
+      </svg>
+    </a>
   )
 }
 
-function ProjectLinks({ p }: { p: Project }) {
-  if (!p.links.length && !p.pending) return null
+function ExtLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
-    <div className="links">
-      {p.links.map((l, i) => (
-        <a key={l.href} href={l.href} target="_blank" rel="noreferrer" className={i === 0 ? 'btn primary' : 'btn'}>
-          {l.label} <Arrow />
-          {l.note && <span className="btn-note">{l.note}</span>}
-        </a>
-      ))}
-      {p.pending && <span className="pending">{p.pending}</span>}
-    </div>
-  )
-}
-
-function Metric({ p }: { p: Project }) {
-  return (
-    <p className="metric">
-      <span className="metric-value">{p.metric.value}</span>
-      <span className="metric-label">{p.metric.label}</span>
-    </p>
-  )
-}
-
-function Stack({ items }: { items: string[] }) {
-  return (
-    <ul className="stack" aria-label="Tools">
-      {items.map((s) => (
-        <li key={s}>{s}</li>
-      ))}
-    </ul>
-  )
-}
-
-function LeadCard() {
-  return (
-    <article className="card lead" id={lead.id}>
-      <div className="lead-text">
-        <p className="kicker">{lead.kicker}</p>
-        <h3>{lead.title}</h3>
-        <p className="body">{lead.body}</p>
-        <Metric p={lead} />
-        <Stack items={lead.stack} />
-        <ProjectLinks p={lead} />
-      </div>
-      <ProjectVisual kind={lead.visual} />
-    </article>
+    <a href={href} target="_blank" rel="noreferrer">
+      {children}
+    </a>
   )
 }
 
 function ProjectCard({ p }: { p: Project }) {
+  const [open, setOpen] = useState(false)
+  const bodyId = `${p.id}-details`
+  const fig = figureSrc[p.visual]
   return (
-    <article className={`card project v-${p.visual}`} id={p.id}>
-      <ProjectVisual kind={p.visual} />
-      <div className="card-text">
-        <p className="kicker">{p.kicker}</p>
-        <h3>{p.title}</h3>
-        <p className="body">{p.body}</p>
-        <Metric p={p} />
-        <Stack items={p.stack} />
-        <ProjectLinks p={p} />
+    <article className={open ? 'card open' : 'card'} id={p.id}>
+      <button className="card-head" aria-expanded={open} aria-controls={bodyId} onClick={() => setOpen((o) => !o)}>
+        <div className="card-fig">
+          <ProjectVisual kind={p.visual} />
+        </div>
+        <div className="card-title">
+          <p className="meta">{p.context}</p>
+          <h3>{p.title}</h3>
+          <p className="result">{p.result}</p>
+          <span className="toggle" aria-hidden="true">
+            <span className="toggle-label">{open ? 'Less' : 'More'}</span>
+            <svg viewBox="0 0 12 12" width="11" height="11">
+              <path d="M2 4.5l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.5" />
+            </svg>
+          </span>
+        </div>
+      </button>
+      <div className="card-body" id={bodyId}>
+        <div className="card-body-inner">
+          <p className="summary">{p.body}</p>
+          {p.bullets && (
+            <ul className="bullets">
+              {p.bullets.map((b) => (
+                <li key={b}>{b}</li>
+              ))}
+            </ul>
+          )}
+          {(p.links.length > 0 || p.pending || fig) && (
+            <p className="entry-links">
+              {p.links.map((l) => (
+                <span key={l.href}>
+                  <ExtLink href={l.href}>{l.label} ↗</ExtLink>
+                  {l.note && <span className="note"> ({l.note})</span>}
+                </span>
+              ))}
+              {fig && <ExtLink href={fig}>Full figure ↗</ExtLink>}
+              {p.pending && <span className="note">{p.pending}</span>}
+            </p>
+          )}
+        </div>
       </div>
     </article>
   )
@@ -120,129 +136,91 @@ export default function App() {
     <>
       <header className="topbar">
         <div className="wrap topbar-inner">
-          <a href="#top" className="mark">TL</a>
-          <nav aria-label="Sections">
-            <a href="#work">Work</a>
-            <a href="#experience">Experience</a>
-            <a href="#publications">Papers</a>
-            <a href={profile.resume} target="_blank" rel="noreferrer">Résumé</a>
+          <a href="#top" className="wordmark">Tianle Liang</a>
+          <nav aria-label="Links">
+            <ExtLink href={profile.resume}>Résumé</ExtLink>
+            <Icon name="github" href={profile.github} label="GitHub" />
+            <Icon name="linkedin" href={profile.linkedin} label="LinkedIn" />
+            <Icon name="mail" href={`mailto:${profile.email}`} label="Email" />
+            <ThemeToggle />
           </nav>
-          <ThemeToggle />
         </div>
       </header>
 
-      <main id="top">
-        <section className="hero wrap">
-          <h1>
-            {profile.name}
-            <span className="aka"> ({profile.legalName})</span>
-          </h1>
-          <p className="tagline">{profile.tagline}</p>
-          <p className="school">{profile.school}</p>
-          <div className="hero-links">
-            <a className="btn primary" href={`mailto:${profile.email}`}>Email me</a>
-            <a className="btn" href={profile.resume} target="_blank" rel="noreferrer">Résumé <Arrow /></a>
-            <a className="btn" href={profile.github} target="_blank" rel="noreferrer">GitHub <Arrow /></a>
-            <a className="btn" href={profile.linkedin} target="_blank" rel="noreferrer">LinkedIn <Arrow /></a>
-          </div>
-          <dl className="stats">
-            {stats.map((s) => (
-              <div key={s.label}>
-                <dt>{s.value}</dt>
-                <dd>{s.label}</dd>
-              </div>
+      <main id="top" className="wrap">
+        <section className="intro">
+          <h1>{profile.name}</h1>
+          <p className="lede">{profile.tagline}</p>
+          <ul className="highlights">
+            {highlights.map((h) => (
+              <li key={h}>{h}</li>
             ))}
-          </dl>
+          </ul>
         </section>
 
-        <section className="wrap section" id="work">
-          <h2 className="section-title">Selected work</h2>
-          <LeadCard />
-          <div className="grid">
+        <section id="projects">
+          <h2>Projects</h2>
+          <div className="cards">
             {projects.map((p) => (
               <ProjectCard key={p.id} p={p} />
             ))}
           </div>
         </section>
 
-        <section className="wrap section" id="experience">
-          <h2 className="section-title">Experience</h2>
-          <ol className="rows">
-            {experience.map((e) => (
-              <li key={e.org} className="row">
-                <span className="row-when">{e.when}</span>
-                <div>
-                  <p className="row-title">
-                    {e.href ? (
-                      <a href={e.href} target="_blank" rel="noreferrer">{e.org} <Arrow /></a>
-                    ) : (
-                      e.org
-                    )}
-                    {e.note && <span className="tag">{e.note}</span>}
-                  </p>
-                  <p className="row-sub">{e.role}</p>
-                  <p className="row-line">{e.line}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
+        <section id="experience">
+          <h2>Experience</h2>
+          {experience.map((e) => (
+            <article key={e.org} className="entry">
+              <p className="meta">{e.when}</p>
+              <h3>{e.href ? <ExtLink href={e.href}>{e.org}</ExtLink> : e.org}</h3>
+              <p className="role">{e.role}</p>
+              <ul className="bullets">
+                {e.bullets.map((b) => (
+                  <li key={b}>{b}</li>
+                ))}
+              </ul>
+            </article>
+          ))}
         </section>
 
-        <section className="wrap section" id="publications">
-          <h2 className="section-title">Publications</h2>
-          <ol className="rows">
+        <section id="publications">
+          <h2>Publications</h2>
+          <ol className="plain">
             {publications.map((p) => (
-              <li key={p.href} className="row">
-                <span className={p.status === 'Published' ? 'row-when' : 'row-when review'}>{p.status}</span>
-                <div>
-                  <p className="row-title">
-                    <a href={p.href} target="_blank" rel="noreferrer">{p.title} <Arrow /></a>
-                  </p>
-                  <p className="row-sub">
-                    {p.venue}
-                    {p.linkLabel && <span className="tag">{p.linkLabel}</span>}
-                  </p>
-                </div>
+              <li key={p.href}>
+                <ExtLink href={p.href}>{p.title}</ExtLink>
+                <span className="note">
+                  {' '}
+                  {p.venue}
+                  {p.linkLabel && `, ${p.linkLabel}`}
+                </span>
               </li>
             ))}
           </ol>
         </section>
 
-        <section className="wrap section" id="honors">
-          <h2 className="section-title">Honors</h2>
-          <ol className="rows">
+        <section id="honors">
+          <h2>Honors</h2>
+          <ul className="plain honors">
             {honors.map((h) => (
-              <li key={h.title} className="row">
-                <span className="row-when">{h.year}</span>
-                <div>
-                  <p className="row-title">
-                    {h.href ? (
-                      <a href={h.href} target="_blank" rel="noreferrer">{h.title} <Arrow /></a>
-                    ) : (
-                      h.title
-                    )}
-                  </p>
-                  <p className="row-line">{h.detail}</p>
-                </div>
+              <li key={h.title}>
+                <span className="year">{h.year}</span>
+                <span>
+                  {h.href ? <ExtLink href={h.href}>{h.title}</ExtLink> : h.title}
+                  {h.detail && <span className="note">, {h.detail}</span>}
+                </span>
               </li>
             ))}
-          </ol>
+          </ul>
         </section>
       </main>
 
-      <footer className="footer">
-        <div className="wrap footer-inner">
-          <div>
-            <p className="footer-head">Get in touch</p>
-            <a href={`mailto:${profile.email}`}>{profile.email}</a>
-            <a href={`mailto:${profile.personalEmail}`}>{profile.personalEmail}</a>
-          </div>
-          <div className="footer-links">
-            <a href={profile.github} target="_blank" rel="noreferrer">GitHub</a>
-            <a href={profile.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
-            <a href={profile.resume} target="_blank" rel="noreferrer">Résumé</a>
-          </div>
-        </div>
+      <footer className="wrap footer">
+        <p>
+          <a href={`mailto:${profile.email}`}>{profile.email}</a>
+          <span className="sep">·</span>
+          <a href={`mailto:${profile.personalEmail}`}>{profile.personalEmail}</a>
+        </p>
       </footer>
     </>
   )
