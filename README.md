@@ -1,5 +1,7 @@
 # portfolio
 
+Live at: https://tianle-terrence-liang.vercel.app/
+
 Personal site. Vite + React + TypeScript, static, deployed on Vercel.
 
 ```
