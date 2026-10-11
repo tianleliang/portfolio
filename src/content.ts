@@ -110,7 +110,7 @@ export const projects: Project[] = [
       'A second brain for hitting a goal. You set a goal, it maps your leverage, scans for opportunities that fit, and asks you to pick before it acts.',
     result: 'V0 live: goal → plan → leverage → scan → select → act → review.',
     links: [
-      { label: 'Code', href: 'https://github.com/tianleliang/alpha_playbook' },
+      { label: 'Code', href: 'https://github.com/tianleliang/alpha-playbook' },
       { label: 'Live V0', href: 'https://playbook-e8xd.onrender.com/welcome', note: 'takes a minute to wake' },
     ],
     visual: 'playbook',
