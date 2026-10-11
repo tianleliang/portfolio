@@ -41,7 +41,7 @@ export const projects: Project[] = [
     context: 'Stanford Systems Optimization Lab, with Prof. Michael Saunders',
     // TODO(voice)
     body:
-      'Texas faces about $43B in modeled climate losses to its power plants through 2050. I built a nonlinear model that splits a resilience budget across 18 plant clusters and solved it with SNOPT. The optimizer decides where to invest and when to protect capacity across a high-dimensional energy system under climate and outage uncertainty.',
+      'Texas faces about $43B in modeled climate losses to its power plants through 2050. I built a nonlinear model that splits a resilience budget across 18 plant clusters and solved it with SNOPT. The hidden challenge was designing a tractable model that still captured the grid’s voltage, fuel, and investment coupling. The result is a decision model the lab can reuse for policy and planning trade-offs.',
     result: 'A $5B plan avoids $10.4B in losses (2.1×), above 1× in all 300 Monte Carlo trials.',
     links: [{ label: 'Live simulator', href: 'https://tianle-liang-ercot-optimization.vercel.app/' }],
     pending: 'code public after lab approval',
@@ -53,7 +53,7 @@ export const projects: Project[] = [
     context: 'Personal AI operating system',
     // TODO(voice)
     body:
-      'A second brain that runs itself. I extended an open-source Obsidian + Claude Code template into one system where agents ingest what I read, remember what matters, and do research on a schedule. Instead of one-off prompts, I can turn a reading habit into a durable knowledge graph and daily briefing loop.',
+      'A second brain that runs itself. I extended an open-source Obsidian + Claude Code template into one system where agents ingest what I read, remember what matters, and do research on a schedule. It treats memory as a product, not a side effect: durable facts are routed into category indexes, logs, and atomic notes, with change-scanning ingestion so updated sources are picked up automatically.',
     bullets: [
       'Memory layer: routes durable facts into category indexes, logs, and atomic notes, with change-scanning ingestion so edits get picked up automatically.',
       'LLM wiki (Karpathy pattern): raw sources stay untouched while agents compile them into an interlinked wiki of summaries, maps, and open questions.',
@@ -84,10 +84,9 @@ export const projects: Project[] = [
     context: 'Rayfield Systems, Harvard Undergraduate Ventures TECH',
     // TODO(voice)
     body:
-      'I led 8 interns on 43,800 hourly records. A naive model leaks future data, so I built two passes: weather predicts a 6-hour power trend, which feeds an hourly XGBoost model. An Isolation Forest compares forecast error to a trained baseline to flag abnormal behavior.',
+      'I led 8 interns on 43,800 hourly records. A naive model leaks future data, so I built two passes: weather predicts a 6-hour power trend, which feeds an hourly XGBoost model. An Isolation Forest layer flags anomalies from residual patterns, making forecast accuracy and reliability measurable together.',
     result: 'R² 0.94, with 85% of hourly predictions within ±0.10.',
-    links: [],
-    pending: 'notebook going public soon',
+    links: [{ label: 'Code', href: 'https://github.com/tianleliang/rayfield-wind-forecasting' }],
     visual: 'rayfield',
   },
   {
@@ -96,7 +95,7 @@ export const projects: Project[] = [
     context: 'UChicago Summer Session, published in Springer LNCS',
     // TODO(voice)
     body:
-      'I scraped 20,000 games with 50+ variables from BoardGameGeek and trained a 5-class random forest to predict how much a game gets played. Social features like comments and ratings mattered more than many expected design features.',
+      'I scraped 20,000 games with 50+ variables from BoardGameGeek and trained a 5-class random forest to predict how much a game gets played. Social features like comments and ratings mattered more than metadata alone, which made the model both interpretable and useful for market signaling.',
     result: '0.71 accuracy, up from 0.39 for the regression baseline. Presented at ICEC 2025 in Tokyo.',
     links: [{ label: 'Paper', href: 'https://link.springer.com/chapter/10.1007/978-3-032-02555-5_18' }],
     visual: 'bgg',
@@ -189,3 +188,4 @@ export const honors: { title: string; detail?: string; year: string; href?: stri
   { title: 'Coolidge Senator', year: '2025' },
   { title: 'National Merit Scholar', year: '2026' },
 ]
+
