@@ -9,6 +9,7 @@ export const profile = {
   email: 'ttliang@engineering.upenn.edu',
   personalEmail: 'tianle.liang16@gmail.com',
   github: 'https://github.com/tianleliang',
+  x: 'https://x.com/tianleliang16',
   linkedin: 'https://www.linkedin.com/in/tianle-liang/',
   resume: 'https://drive.google.com/file/d/1UoBtQHNDpJsutb0qyMVBwUxxeusr9tEI/view?usp=sharing',
 }
@@ -188,4 +189,5 @@ export const honors: { title: string; detail?: string; year: string; href?: stri
   { title: 'Coolidge Senator', year: '2025' },
   { title: 'National Merit Scholar', year: '2026' },
 ]
+
 
